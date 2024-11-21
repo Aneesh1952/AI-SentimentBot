@@ -2,7 +2,7 @@ import pandas as pd
 from textblob import TextBlob
 
 # Load the dataset from a local file
-df = pd.read_csv(r"IMDB Dataset_csv.xls")  # Make sure the file is in the same directory or provide the full path
+df = pd.read_csv(r"IMDB Dataset_csv.zip")  # Make sure the file is in the same directory or provide the full path
 
 # Display the first few rows
 print(df.head())
