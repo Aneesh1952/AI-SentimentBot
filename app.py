@@ -11,7 +11,7 @@ with zipfile.ZipFile(zip_path, 'r') as zip_ref:
     zip_ref.extractall("IMDB_Dataset_csv")  # Extracts into a folder
 
 # Get the path of the extracted CSV file
-csv_file_path = os.path.join("IMDB_Dataset_csv", "IMDB Dataset.csv")  # Update with the actual filename if different
+csv_file_path = os.path.join("IMDB_Dataset_csv", "IMDB_Dataset_csv.csv")  # Update with the actual filename if different
 
 # Load the dataset from the extracted CSV file
 df = pd.read_csv(csv_file_path)
