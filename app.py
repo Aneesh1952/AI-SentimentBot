@@ -1,9 +1,13 @@
+import os
 import pandas as pd
 from textblob import TextBlob
+from flask import Flask, request, jsonify
 import zipfile
-import os
 
-# Path to the zip file
+# Initialize Flask app
+app = Flask(__name__)
+
+# Path to the zip file (ensure this file is included in your deployment environment)
 zip_path = "IMDB Dataset_csv.zip"
 
 # Extract the zip file
@@ -16,8 +20,9 @@ csv_file_path = os.path.join("IMDB_Dataset_csv", "IMDB Dataset_csv.csv")  # Upda
 # Load the dataset from the extracted CSV file
 df = pd.read_csv(csv_file_path)
 
-# Display the first few rows
+# Display the first few rows for debugging (comment out in production)
 print(df.head())
+
 
 # Define a function to analyze sentiment
 def analyze_sentiment(text):
@@ -30,6 +35,7 @@ def analyze_sentiment(text):
     else:
         return "neutral"
 
+
 # Example chatbot responses based on sentiment
 def chatbot_response(user_input):
     sentiment = analyze_sentiment(user_input)
@@ -40,14 +46,27 @@ def chatbot_response(user_input):
     else:
         return "Thank you for sharing your thoughts. How can I help you today?"
 
-# Test the chatbot response
-user_inputs = [
-    "I love this product! It's amazing.",
-    "I'm not happy with the service.",
-    "It's okay, nothing special."
-]
 
-for user_input in user_inputs:
+# Flask route to handle chatbot interactions
+@app.route('/chat', methods=['POST'])
+def chat():
+    # Get user input from the POST request
+    data = request.json
+    user_input = data.get("user_input", "")
+
+    # Generate a chatbot response
     response = chatbot_response(user_input)
-    print(f"User  Input: {user_input}")
-    print(f"Chatbot Response: {response}")
+    return jsonify({"response": response})
+
+
+# Flask route to test data loading (optional)
+@app.route('/data', methods=['GET'])
+def get_data():
+    # Return the first 5 rows of the dataset as a JSON response
+    return df.head().to_json(orient="records")
+
+
+if __name__ == "__main__":
+    # Bind to the port specified by the environment, default to 5000
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
